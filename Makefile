@@ -1,5 +1,5 @@
 build:
-	CGO_ENABLED=0 GOOS=linux go build -o pdf2text .
+	CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -o pdf2text .
 
 release: build
 	docker buildx build --platform linux/amd64 -t haxii/pdf2text -f Dockerfile .
