@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/rs/xid"
+	"github.com/valyala/fasthttp"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
-	"time"
-
-	"github.com/valyala/fasthttp"
 )
 
 func convertPDF(ctx *fasthttp.RequestCtx) {
@@ -20,23 +19,23 @@ func convertPDF(ctx *fasthttp.RequestCtx) {
 		ctx.Error("Body is missing", 400)
 		return
 	}
-	tmpFileName := "/tmp/pdftotext.tmp" + time.Now().String()
+	tmpFileName := fmt.Sprintf("/tmp/pdf2text-%s.tmp", xid.New().String())
 	bodyBytes := ctx.PostBody()
 	err := ioutil.WriteFile(tmpFileName, bodyBytes, 0600)
 	if err != nil {
 		ctx.Error("Failed to open the file for writing", 500)
 		return
 	}
-	defer os.Remove(tmpFileName)
-	// log.Printf("File uploaded successfully.")
+	defer func() {
+		_ = os.Remove(tmpFileName)
+	}()
 
 	body, err := exec.Command("pdftotext", "-nopgbrk", "-enc", "UTF-8", tmpFileName, "-").Output()
 	if err != nil {
 		log.Printf("pdftotext error: %s", err)
 		ctx.Error(err.Error(), 500)
 	}
-	fmt.Fprintf(ctx, string(body))
-	// log.Printf("File successfully converted.")
+	_, _ = fmt.Fprintf(ctx, string(body))
 }
 
 func main() {
