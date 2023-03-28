@@ -56,7 +56,7 @@ func convertPDF(ctx *fasthttp.RequestCtx) {
 		log.Printf("pdftotext error: %s", err)
 		ctx.Error(err.Error(), 500)
 	}
-	_, _ = fmt.Fprintf(ctx, string(body))
+	_, _ = ctx.Write(body)
 }
 
 func main() {
