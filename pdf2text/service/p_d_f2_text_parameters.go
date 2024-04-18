@@ -7,6 +7,7 @@ package service
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"time"
 
@@ -147,6 +148,11 @@ type PDF2TextParams struct {
 	   owner password (for encrypted files)
 	*/
 	Opw *string
+
+	// Pdf.
+	//
+	// Format: binary
+	Pdf io.ReadCloser
 
 	/* Pgbrk.
 
@@ -412,6 +418,17 @@ func (o *PDF2TextParams) WithOpw(opw *string) *PDF2TextParams {
 // SetOpw adds the opw to the p d f2 text params
 func (o *PDF2TextParams) SetOpw(opw *string) {
 	o.Opw = opw
+}
+
+// WithPdf adds the pdf to the p d f2 text params
+func (o *PDF2TextParams) WithPdf(pdf io.ReadCloser) *PDF2TextParams {
+	o.SetPdf(pdf)
+	return o
+}
+
+// SetPdf adds the pdf to the p d f2 text params
+func (o *PDF2TextParams) SetPdf(pdf io.ReadCloser) {
+	o.Pdf = pdf
 }
 
 // WithPgbrk adds the pgbrk to the p d f2 text params
@@ -745,6 +762,11 @@ func (o *PDF2TextParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regi
 			if err := r.SetQueryParam("opw", qOpw); err != nil {
 				return err
 			}
+		}
+	}
+	if o.Pdf != nil {
+		if err := r.SetBodyParam(o.Pdf); err != nil {
+			return err
 		}
 	}
 

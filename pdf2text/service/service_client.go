@@ -49,7 +49,7 @@ func (a *Client) PDF2Text(params *PDF2TextParams, opts ...ClientOption) (*PDF2Te
 		ID:                 "PDF2Text",
 		Method:             "POST",
 		PathPattern:        "/",
-		ProducesMediaTypes: []string{"application/json"},
+		ProducesMediaTypes: []string{"text/plain"},
 		ConsumesMediaTypes: []string{"application/pdf"},
 		Schemes:            []string{"http"},
 		Params:             params,

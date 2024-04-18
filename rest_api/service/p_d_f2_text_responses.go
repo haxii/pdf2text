@@ -9,8 +9,6 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
-
-	"github.com/haxii/pdf2text/models"
 )
 
 // PDF2TextOKCode is the HTTP code returned for type PDF2TextOK
@@ -26,7 +24,7 @@ type PDF2TextOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.Pdf2TextResult `json:"body,omitempty"`
+	Payload string `json:"body,omitempty"`
 }
 
 // NewPDF2TextOK creates PDF2TextOK with default headers values
@@ -36,13 +34,13 @@ func NewPDF2TextOK() *PDF2TextOK {
 }
 
 // WithPayload adds the payload to the p d f2 text o k response
-func (o *PDF2TextOK) WithPayload(payload *models.Pdf2TextResult) *PDF2TextOK {
+func (o *PDF2TextOK) WithPayload(payload string) *PDF2TextOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the p d f2 text o k response
-func (o *PDF2TextOK) SetPayload(payload *models.Pdf2TextResult) {
+func (o *PDF2TextOK) SetPayload(payload string) {
 	o.Payload = payload
 }
 
@@ -50,10 +48,33 @@ func (o *PDF2TextOK) SetPayload(payload *models.Pdf2TextResult) {
 func (o *PDF2TextOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
+	payload := o.Payload
+	if err := producer.Produce(rw, payload); err != nil {
+		panic(err) // let the recovery middleware deal with this
 	}
+}
+
+// PDF2TextInternalServerErrorCode is the HTTP code returned for type PDF2TextInternalServerError
+const PDF2TextInternalServerErrorCode int = 500
+
+/*
+PDF2TextInternalServerError internal error
+
+swagger:response pDF2TextInternalServerError
+*/
+type PDF2TextInternalServerError struct {
+}
+
+// NewPDF2TextInternalServerError creates PDF2TextInternalServerError with default headers values
+func NewPDF2TextInternalServerError() *PDF2TextInternalServerError {
+
+	return &PDF2TextInternalServerError{}
+}
+
+// WriteResponse to the client
+func (o *PDF2TextInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
+	rw.WriteHeader(500)
 }

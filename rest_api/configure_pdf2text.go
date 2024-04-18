@@ -16,33 +16,22 @@ func configureFlags(api *service.Pdf2textAPI) {
 }
 
 func configureAPI(api *service.Pdf2textAPI) http.Handler {
-	// configure the api here
 	api.ServeError = errors.ServeError
-
-	// Set your custom logger if needed. Default one is log.Printf
-	// Expected interface func(string, ...interface{})
-	//
-	// Example:
-	// api.Logger = log.Printf
-
 	api.UseSwaggerUI()
-	// To continue using redoc as your UI, uncomment the following line
-	// api.UseRedoc()
-
 	api.BinConsumer = runtime.ByteStreamConsumer()
+	api.TxtProducer = runtime.TextProducer()
 
-	api.JSONProducer = runtime.JSONProducer()
-
-	if api.PDF2TextHandler == nil {
-		api.PDF2TextHandler = service.PDF2TextHandlerFunc(func(params service.PDF2TextParams) middleware.Responder {
-			return middleware.NotImplemented("operation service.PDF2Text has not yet been implemented")
-		})
-	}
-
+	api.PDF2TextHandler = service.PDF2TextHandlerFunc(
+		func(params service.PDF2TextParams) middleware.Responder {
+			text, err := pdf2Text(params)
+			if err != nil {
+				middleware.Error(http.StatusInternalServerError, err.Error())
+			}
+			return service.NewPDF2TextOK().WithPayload(string(text))
+		},
+	)
 	api.PreServerShutdown = func() {}
-
 	api.ServerShutdown = func() {}
-
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
 }
 

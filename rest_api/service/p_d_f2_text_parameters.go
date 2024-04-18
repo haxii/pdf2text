@@ -6,6 +6,7 @@ package service
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
@@ -97,6 +98,11 @@ type PDF2TextParams struct {
 	  In: query
 	*/
 	Opw *string
+	/*
+	  Required: true
+	  In: body
+	*/
+	Pdf io.ReadCloser
 	/*insert page breaks between pages
 	  In: query
 	*/
@@ -210,6 +216,12 @@ func (o *PDF2TextParams) BindRequest(r *http.Request, route *middleware.MatchedR
 	qOpw, qhkOpw, _ := qs.GetOK("opw")
 	if err := o.bindOpw(qOpw, qhkOpw, route.Formats); err != nil {
 		res = append(res, err)
+	}
+
+	if runtime.HasBody(r) {
+		o.Pdf = r.Body
+	} else {
+		res = append(res, errors.Required("pdf", "body", ""))
 	}
 
 	qPgbrk, qhkPgbrk, _ := qs.GetOK("pgbrk")

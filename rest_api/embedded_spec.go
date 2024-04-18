@@ -35,7 +35,7 @@ func init() {
           "application/pdf"
         ],
         "produces": [
-          "application/json"
+          "text/plain"
         ],
         "tags": [
           "pdf2text",
@@ -181,33 +181,28 @@ func init() {
             "description": "user password (for encrypted files)",
             "name": "upw",
             "in": "query"
+          },
+          {
+            "name": "pdf",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "pdf2text result",
             "schema": {
-              "$ref": "#/definitions/pdf2TextResult"
+              "type": "string",
+              "example": "text"
             }
+          },
+          "500": {
+            "description": "internal error"
           }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "pdf2TextResult": {
-      "type": "object",
-      "properties": {
-        "msg": {
-          "description": "OK for success, otherwise info",
-          "type": "string"
-        },
-        "success": {
-          "type": "boolean"
-        },
-        "text": {
-          "description": "text",
-          "type": "string"
         }
       }
     }
@@ -231,7 +226,7 @@ func init() {
           "application/pdf"
         ],
         "produces": [
-          "application/json"
+          "text/plain"
         ],
         "tags": [
           "pdf2text",
@@ -377,33 +372,28 @@ func init() {
             "description": "user password (for encrypted files)",
             "name": "upw",
             "in": "query"
+          },
+          {
+            "name": "pdf",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "pdf2text result",
             "schema": {
-              "$ref": "#/definitions/pdf2TextResult"
+              "type": "string",
+              "example": "text"
             }
+          },
+          "500": {
+            "description": "internal error"
           }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "pdf2TextResult": {
-      "type": "object",
-      "properties": {
-        "msg": {
-          "description": "OK for success, otherwise info",
-          "type": "string"
-        },
-        "success": {
-          "type": "boolean"
-        },
-        "text": {
-          "description": "text",
-          "type": "string"
         }
       }
     }

@@ -13,7 +13,7 @@
 //	  - application/pdf
 //
 //	Produces:
-//	  - application/json
+//	  - text/plain
 //
 // swagger:meta
 package rest_api

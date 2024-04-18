@@ -40,7 +40,7 @@ func NewPdf2textAPI(spec *loads.Document) *Pdf2textAPI {
 
 		BinConsumer: runtime.ByteStreamConsumer(),
 
-		JSONProducer: runtime.JSONProducer(),
+		TxtProducer: runtime.TextProducer(),
 
 		PDF2TextHandler: PDF2TextHandlerFunc(func(params PDF2TextParams) middleware.Responder {
 			return middleware.NotImplemented("operation PDF2Text has not yet been implemented")
@@ -77,9 +77,9 @@ type Pdf2textAPI struct {
 	//   - application/pdf
 	BinConsumer runtime.Consumer
 
-	// JSONProducer registers a producer for the following mime types:
-	//   - application/json
-	JSONProducer runtime.Producer
+	// TxtProducer registers a producer for the following mime types:
+	//   - text/plain
+	TxtProducer runtime.Producer
 
 	// PDF2TextHandler sets the operation handler for the p d f2 text operation
 	PDF2TextHandler PDF2TextHandler
@@ -156,8 +156,8 @@ func (o *Pdf2textAPI) Validate() error {
 		unregistered = append(unregistered, "BinConsumer")
 	}
 
-	if o.JSONProducer == nil {
-		unregistered = append(unregistered, "JSONProducer")
+	if o.TxtProducer == nil {
+		unregistered = append(unregistered, "TxtProducer")
 	}
 
 	if o.PDF2TextHandler == nil {
@@ -209,8 +209,8 @@ func (o *Pdf2textAPI) ProducersFor(mediaTypes []string) map[string]runtime.Produ
 	result := make(map[string]runtime.Producer, len(mediaTypes))
 	for _, mt := range mediaTypes {
 		switch mt {
-		case "application/json":
-			result["application/json"] = o.JSONProducer
+		case "text/plain":
+			result["text/plain"] = o.TxtProducer
 		}
 
 		if p, ok := o.customProducers[mt]; ok {
