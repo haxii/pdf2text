@@ -3,7 +3,7 @@
 Usage
 
 ```
-curl -i --data-binary @file.pdf http://127.0.0.1:5000/
+curl -i -H 'Content-Type: application/pdf' --data-binary @file.pdf http://127.0.0.1:5000/
 ```
 
 Benchmark
